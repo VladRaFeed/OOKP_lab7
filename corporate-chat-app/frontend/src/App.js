@@ -14,6 +14,7 @@ function App() {
   const [peers, setPeers] = useState({});
   const videoRef = useRef();
   const peersRef = useRef({});
+  const videoRefs = useRef({}); // Окремий ref для кожного віддаленого відео
   const [stream, setStream] = useState(null);
   const [cameraOn, setCameraOn] = useState(false);
   const [micOn, setMicOn] = useState(false);
@@ -26,50 +27,54 @@ function App() {
     });
 
     // WebRTC
-    navigator.mediaDevices.getUserMedia({ video: true, audio: true }).then((stream) => {
-      setStream(stream);
-      videoRef.current.srcObject = stream;
-      socket.emit('join-room', roomId);
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then((stream) => {
+        setStream(stream);
+        videoRef.current.srcObject = stream;
+        socket.emit('join-room', roomId);
 
-      socket.on('user-connected', (userId) => {
-        if (userId !== socket.id) { // Уникаємо додавання себе
-          console.log(`New user connected: ${userId}`);
-          const peer = createPeer(userId, socket.id, stream);
-          peersRef.current[userId] = peer;
-          setPeers((prev) => ({ ...prev, [userId]: peer }));
-        }
-      });
-
-      socket.on('signal', ({ from, signalData }) => {
-        if (from !== socket.id) { // Уникаємо обробки власних сигналів
-          console.log(`Received signal from: ${from}`);
-          if (peersRef.current[from]) {
-            peersRef.current[from].signal(signalData);
-          } else {
-            const peer = addPeer(signalData, from, stream);
-            peersRef.current[from] = peer;
-            setPeers((prev) => ({ ...prev, [from]: peer }));
+        socket.on('user-connected', (userId) => {
+          if (userId !== socket.id) {
+            console.log(`New user connected: ${userId}`);
+            const peer = createPeer(userId, socket.id, stream);
+            peersRef.current[userId] = peer;
+            videoRefs.current[userId] = React.createRef();
+            setPeers((prev) => ({ ...prev, [userId]: peer }));
           }
-        }
+        });
+
+        socket.on('signal', ({ from, signalData }) => {
+          if (from !== socket.id) {
+            console.log(`Received signal from: ${from}`);
+            if (peersRef.current[from]) {
+              peersRef.current[from].signal(signalData);
+            } else {
+              const peer = addPeer(signalData, from, stream);
+              peersRef.current[from] = peer;
+              videoRefs.current[from] = React.createRef();
+              setPeers((prev) => ({ ...prev, [from]: peer }));
+            }
+          }
+        });
+
+        socket.on('user-disconnected', (userId) => {
+          if (peersRef.current[userId]) {
+            console.log(`User disconnected: ${userId}`);
+            peersRef.current[userId].destroy();
+            delete peersRef.current[userId];
+            delete videoRefs.current[userId];
+            setPeers((prev) => {
+              const newPeers = { ...prev };
+              delete newPeers[userId];
+              return newPeers;
+            });
+          }
+        });
+      })
+      .catch((err) => {
+        console.error('Error accessing media devices:', err);
       });
 
-      socket.on('user-disconnected', (userId) => {
-        if (peersRef.current[userId]) {
-          console.log(`User disconnected: ${userId}`);
-          peersRef.current[userId].destroy();
-          delete peersRef.current[userId];
-          setPeers((prev) => {
-            const newPeers = { ...prev };
-            delete newPeers[userId];
-            return newPeers;
-          });
-        }
-      });
-    }).catch((err) => {
-      console.error('Error accessing media devices:', err);
-    });
-
-    // Обробка помилок Socket.IO
     socket.on('connect_error', (error) => {
       console.error('Socket.IO connection error:', error);
     });
@@ -80,6 +85,9 @@ function App() {
       socket.off('signal');
       socket.off('user-disconnected');
       socket.off('connect_error');
+      if (stream) {
+        stream.getTracks().forEach((track) => track.stop());
+      }
     };
   }, [chatId, roomId]);
 
@@ -94,8 +102,12 @@ function App() {
       socket.emit('signal', { roomId, signalData: signal, to: userToSignal });
     });
     peer.on('stream', (remoteStream) => {
-      console.log(`Received stream from ${userToSignal}`);
-      // Потік уже додається через peersRef
+      console.log(`Received stream from ${userToSignal}`, remoteStream.getTracks());
+      if (videoRefs.current[userToSignal]?.current) {
+        videoRefs.current[userToSignal].current.srcObject = remoteStream;
+      } else {
+        console.warn(`No video ref for ${userToSignal}`);
+      }
     });
     peer.on('error', (err) => {
       console.error(`Peer error with ${userToSignal}:`, err);
@@ -114,8 +126,12 @@ function App() {
       socket.emit('signal', { roomId, signalData: signal, to: callerID });
     });
     peer.on('stream', (remoteStream) => {
-      console.log(`Received stream from ${callerID}`);
-      // Потік уже додається через peersRef
+      console.log(`Received stream from ${callerID}`, remoteStream.getTracks());
+      if (videoRefs.current[callerID]?.current) {
+        videoRefs.current[callerID].current.srcObject = remoteStream;
+      } else {
+        console.warn(`No video ref for ${callerID}`);
+      }
     });
     peer.on('error', (err) => {
       console.error(`Peer error with ${callerID}:`, err);
@@ -158,15 +174,7 @@ function App() {
           {Object.keys(peers).map((peerId) => (
             <div key={peerId} className="video-wrapper">
               <h3>User {peerId.slice(0, 5)}</h3>
-              <video
-                autoPlay
-                ref={(ref) => {
-                  if (ref && peers[peerId]?.streams?.[0]) {
-                    ref.srcObject = peers[peerId].streams[0];
-                  }
-                }}
-                className="video"
-              />
+              <video autoPlay ref={videoRefs.current[peerId]} className="video" />
             </div>
           ))}
         </div>
