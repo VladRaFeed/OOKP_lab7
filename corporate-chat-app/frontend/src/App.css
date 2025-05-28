@@ -1,141 +1,221 @@
+/* Базові стилі */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: #f0f2f5;
   margin: 0;
-  padding: 20px;
+  padding: 0;
+  font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background-color: #f1f3f4;
+  color: #202124;
 }
 
 .App {
-  max-width: 1200px;
+  max-width: 1400px;
   margin: 0 auto;
-  padding: 20px;
-  background-color: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 16px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
+  min-height: calc(100vh - 32px);
+  display: flex;
+  flex-direction: column;
 }
 
+/* Заголовок */
 h1 {
-  color: #333;
+  font-size: 24px;
+  font-weight: 400;
+  color: #202124;
+  margin: 0 0 16px;
   text-align: center;
-  margin-bottom: 20px;
 }
 
+/* Контейнер відео */
 .video-container {
-  margin-bottom: 30px;
+  flex: 1;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  margin-bottom: 16px;
 }
 
 .video-container h2 {
-  color: #555;
-  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #3c4043;
+  margin: 0 0 12px;
 }
 
+/* Сітка відео */
 .video-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+  padding: 8px;
 }
 
 .video-wrapper {
-  text-align: center;
+  position: relative;
+  background-color: #000;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
 .video-wrapper h3 {
-  color: #444;
-  margin-bottom: 10px;
-  font-size: 16px;
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background-color: rgba(0,0,0,0.6);
+  padding: 4px 8px;
+  border-radius: 4px;
+  margin: 0;
 }
 
 .video {
   width: 100%;
-  max-width: 300px;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  background-color: #000;
+  height: 240px;
+  object-fit: cover;
+  display: block;
 }
 
+/* Керування (кнопки камери/мікрофона) */
 .controls {
-  margin-top: 15px;
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 16px;
 }
 
 .controls button {
-  padding: 10px 20px;
-  margin: 0 10px;
-  background-color: #007bff;
-  color: white;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background-color: #1a73e8;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s, box-shadow 0.2s;
 }
 
 .controls button:hover {
-  background-color: #0056b3;
+  background-color: #1557b0;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
+.controls button:active {
+  background-color: #174ea6;
+}
+
+/* Контейнер чату */
 .chat-container {
-  background-color: #f8f9fa;
-  padding: 20px;
+  padding: 16px;
+  background-color: #fff;
   border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(60,64,67,0.3);
 }
 
 .chat-container h2 {
-  color: #555;
-  margin-bottom: 15px;
+  font-size: 18px;
+  font-weight: 500;
+  color: #3c4043;
+  margin: 0 0 12px;
 }
 
+/* Повідомлення чату */
 .chat-messages {
   max-height: 300px;
   overflow-y: auto;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-bottom: 15px;
+  padding: 8px;
+  background-color: #f8f9fa;
+  border-radius: 4px;
+  margin-bottom: 12px;
 }
 
 .chat-messages p {
-  margin: 5px 0;
-  padding: 8px;
-  background-color: #e9ecef;
-  border-radius: 5px;
+  margin: 4px 0;
+  padding: 8px 12px;
+  background-color: #e8f0fe;
+  border-radius: 12px;
+  font-size: 14px;
+  color: #202124;
+  max-width: 80%;
 }
 
+.chat-messages p:nth-child(even) {
+  background-color: #f1f3f4;
+  margin-left: auto;
+}
+
+/* Введення повідомлень */
 .chat-input {
   display: flex;
-  gap: 10px;
+  gap: 8px;
 }
 
 .chat-input input {
   flex: 1;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
+  padding: 10px 12px;
   font-size: 14px;
+  border: 1px solid #dadce0;
+  border-radius: 4px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.chat-input input:focus {
+  border-color: #1a73e8;
+  box-shadow: 0 0 0 1px #1a73e8;
 }
 
 .chat-input button {
-  padding: 10px 20px;
-  background-color: #28a745;
-  color: white;
+  padding: 10px 24px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+  background-color: #1a73e8;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
-  transition: background-color 0.3s;
+  transition: background-color 0.2s;
 }
 
 .chat-input button:hover {
-  background-color: #218838;
+  background-color: #1557b0;
+}
+
+.chat-input button:active {
+  background-color: #174ea6;
 }
 
 /* Адаптивність */
-@media (max-width: 600px) {
+@media (max-width: 900px) {
+  .App {
+    padding: 8px;
+  }
+
   .video-grid {
     grid-template-columns: 1fr;
   }
 
+  .video {
+    height: 200px;
+  }
+
+  .controls {
+    flex-direction: column;
+    align-items: center;
+  }
+
   .controls button {
     width: 100%;
-    margin: 5px 0;
+    max-width: 300px;
+    justify-content: center;
   }
 
   .chat-input {
@@ -145,5 +225,24 @@ h1 {
   .chat-input input,
   .chat-input button {
     width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 20px;
+  }
+
+  .video-container h2,
+  .chat-container h2 {
+    font-size: 16px;
+  }
+
+  .video-wrapper h3 {
+    font-size: 12px;
+  }
+
+  .chat-messages p {
+    font-size: 13px;
   }
 }
