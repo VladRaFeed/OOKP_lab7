@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
+import './App.css';
 
 const socket = io('https://ookp-lab7.onrender.com', {
   transports: ['websocket', 'polling'],
