@@ -47,10 +47,9 @@ h1 {
 
 /* Сітка відео */
 .video-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 16px;
-  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
 }
 
 .video-wrapper {
