@@ -9,7 +9,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'https://ookp-lab7-sny6-k982m3bve-vladyslavs-projects-15c55d5f.vercel.app/', // Зміни на URL фронтенду після розгортання
+    origin: 'https://ookp-lab7-sny6.vercel.app/',
     methods: ['GET', 'POST'],
   },
 });
