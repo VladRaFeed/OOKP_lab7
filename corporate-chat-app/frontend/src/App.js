@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import io from 'socket.io-client';
 import Peer from 'simple-peer';
 
-const socket = io('https://your-backend.onrender.com'); // Заміни на URL бекенду
+const socket = io('https://ookp-lab7.onrender.com'); // Заміни на URL бекенду
 
 function App() {
   const [chatId] = useState('main-chat');
