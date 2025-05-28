@@ -7,20 +7,29 @@ require('dotenv').config();
 
 const app = express();
 const server = http.createServer(app);
+
+// Налаштування CORS для Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: 'https://ookp-lab7-sny6.vercel.app/',
+    origin: 'https://ookp-lab7-sny6.vercel.app', // Без слеша в кінці
     methods: ['GET', 'POST'],
+    credentials: true, // Для підтримки кук або авторизації (про всяк випадок)
   },
 });
 
-app.use(cors());
+// Налаштування CORS для Express
+app.use(cors({
+  origin: 'https://ookp-lab7-sny6.vercel.app', // Без слеша в кінці
+  methods: ['GET', 'POST'],
+  credentials: true,
+}));
+
 app.use(express.json());
 
 // Підключення до MongoDB
-mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('MongoDB connected'))
-  .catch(err => console.error(err));
+  .catch(err => console.error('MongoDB connection error:', err));
 
 // Схема для повідомлень
 const messageSchema = new mongoose.Schema({
