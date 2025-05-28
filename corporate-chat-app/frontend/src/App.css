@@ -150,10 +150,10 @@ h1 {
   max-width: 80%;
 }
 
-.chat-messages p:nth-child(even) {
+/* .chat-messages p:nth-child(even) {
   background-color: #f1f3f4;
   margin-left: auto;
-}
+} */
 
 /* Введення повідомлень */
 .chat-input {
