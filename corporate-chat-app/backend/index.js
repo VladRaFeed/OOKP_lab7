@@ -11,7 +11,7 @@ const server = http.createServer(app);
 // Налаштування CORS для Socket.IO
 const io = new Server(server, {
   cors: {
-    origin: 'https://ookp-lab7-sny6.vercel.app', // Без слеша в кінці
+    origin: 'https://ookp-lab7-sny6.vercel.app', 
     methods: ['GET', 'POST'],
     credentials: true, // Для підтримки кук або авторизації (про всяк випадок)
   },
@@ -19,7 +19,7 @@ const io = new Server(server, {
 
 // Налаштування CORS для Express
 app.use(cors({
-  origin: 'https://ookp-lab7-sny6.vercel.app', // Без слеша в кінці
+  origin: 'https://ookp-lab7-sny6.vercel.app',
   methods: ['GET', 'POST'],
   credentials: true,
 }));
